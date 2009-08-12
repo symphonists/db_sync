@@ -3,7 +3,7 @@
 * Version: 0.3
 * Author: Nick Dunn <http://github.com/nickdunn/>, Richard Warrender <http://github.com/rwarrender>
 * Build Date: 2009-08-12
-* Requirements: Symphony 2.0.3 and core modification (see below)
+* Requirements: Symphony 2.0.3 with core modification (see below), ASDC Extension <http://github.com/pointybeard/asdc/tree/master>
 
 ## Installation
 
