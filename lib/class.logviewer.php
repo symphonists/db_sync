@@ -1,7 +1,7 @@
 <?php
 
 class LogViewer {
-
+	
 	const MODE_DOWNLOAD = "download";
 	const MODE_ECHO = "echo";
 
@@ -11,6 +11,7 @@ class LogViewer {
 	
 		echo "--\n";
 		echo "-- DB Sync from " . $_SERVER['HTTP_HOST'] . ' at ' . gmdate('D, d M Y H:i:s') . " GMT\n";
+		echo "-- " . $this->count() . " queries\n";
 		echo "--\n\n";
 				
 		try {
@@ -23,6 +24,7 @@ class LogViewer {
 		}
 
 		switch($mode) {
+				
 			case self::MODE_DOWNLOAD:
 				$contents = gzencode(ob_get_contents(), 9); // Gzipped
 				ob_end_clean();
@@ -58,11 +60,16 @@ class LogViewer {
 		$queries = ASDCLoader::instance()->query($sql);
 
 		foreach($queries as $query) {
+			// one last double check to make sure no content edits get through
 			if (stristr($query->sql, 'sym_entries_data_') && strtolower(substr($query->sql, 0, 6)) == 'insert') continue;
 			if (stristr($query->sql, 'sym_entries_data_') && strtolower(substr($query->sql, 0, 6)) == 'update') continue;
 			echo($query->sql . ";\n");
 		}
 	
+	}
+	
+	public function count() {
+		return ASDCLoader::instance()->query('SELECT COUNT(id) as `count` FROM `db_sync`')->current()->count;
 	}
 	
 	public function flush() {
