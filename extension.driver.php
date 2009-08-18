@@ -7,8 +7,8 @@
 		public function about() {
 			return array(
 				'name'			=> 'Database Synchroniser',
-				'version'		=> '0.3',
-				'release-date'	=> '2009-08-12',
+				'version'		=> '0.4',
+				'release-date'	=> '2009-08-18',
 				'author'		=> array(
 					'name'			=> 'Nick Dunn, Richard Warrender',
 					'website'		=> 'http://airlock.com',
@@ -76,8 +76,12 @@
 		}
 		
 		public function appendPreferences($context){
-						
+			
 			$context['parent']->Page->addScriptToHead(URL . '/extensions/db_sync/assets/ui-logic.js', 666);
+			
+			if(isset($_POST['action']['db_sync_echo'])){
+				header('Location: ' . URL . '/symphony/extension/db_sync/log/');
+			}
 			
 			if(isset($_POST['action']['db_sync_flush'])){
 				$this->__flushLog($context);
@@ -99,11 +103,16 @@
 				$span->appendChild(new XMLElement('p', '<strong>Warning: It appears you do not have the zlib extension available.'));
 			}
 			else{
+				
+				require_once(dirname(__FILE__) . '/lib/class.logviewer.php');
+				$log = new LogViewer();
+				
+				$span->appendChild(new XMLElement('button', 'View log (' . $log->count() . ' queries)', array('name' => 'action[db_sync_echo]', 'type' => 'submit')));
 				$span->appendChild(new XMLElement('button', 'Download SQL', array('name' => 'action[db_sync_download]', 'type' => 'submit')));
 				$span->appendChild(new XMLElement('button', 'Flush Log', array('name' => 'action[db_sync_flush]', 'type' => 'submit')));
 			}
 			$div->appendChild($span);
-			$div->appendChild(new XMLElement('p', 'Deletes current queries in the db sync log.', array('class' => 'help')));	
+			$group->appendChild(new XMLElement('p', 'Manage migration of structural database queries.', array('class' => 'help')));
 			$group->appendChild($div);
 			
 			$context['wrapper']->appendChild($group);
