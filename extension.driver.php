@@ -1,14 +1,14 @@
 <?php
 
-	require_once(EXTENSIONS . '/asdc/lib/class.asdc.php');
+	require_once(EXTENSIONS . '/db_sync/lib/class.logquery.php');
 	
 	Class extension_db_sync extends Extension {
 	
 		public function about() {
 			return array(
 				'name'			=> 'Database Synchroniser',
-				'version'		=> '0.4',
-				'release-date'	=> '2009-08-18',
+				'version'		=> '0.6',
+				'release-date'	=> '2009-09-06',
 				'author'		=> array(
 					'name'			=> 'Nick Dunn, Richard Warrender',
 					'website'		=> 'http://airlock.com',
@@ -18,29 +18,32 @@
 			);
 		}
 		
-		/*public function fetchNavigation() {
-			return array(
-				array(
-					'location' => 'System',
-					'name'	=> 'Database Sync',
-					'link'	=> '/log/',
-				)
-			);
-		}*/
-		
 		public function uninstall() {
 			$this->_Parent->Database->query("DROP TABLE `db_sync`");
+			$this->_Parent->Database->query("DROP TABLE `db_sync_events`");
 		}
 		
 		public function install() {
-		
+			
 			$this->_Parent->Database->query("
 				CREATE TABLE `db_sync` (
 				  `id` int(11) NOT NULL auto_increment,
 				  `sql` text,
-				  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+				  `event` varchar(255) default NULL,
 				  PRIMARY KEY  (`id`)
-				)");
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8
+			");
+			
+			$this->_Parent->Database->query("
+				CREATE TABLE `db_sync_events` (
+				  `id` int(11) NOT NULL auto_increment,
+				  `event` varchar(255) default NULL,
+				  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+				  `author_name` varchar(255) default NULL,
+				  `page` varchar(255) default NULL,
+				  PRIMARY KEY  (`id`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8
+			");
 				
 			return true;
 		}
@@ -56,16 +59,20 @@
 					);
 		}
 		
+		protected function __echoLog() {
+			require_once(dirname(__FILE__) . '/lib/class.logviewer.php');
+			$log = new LogViewer();
+			$log->display(LogViewer::MODE_ECHO);
+		}
+		
 		protected function __downloadSQL() {
 			require_once(dirname(__FILE__) . '/lib/class.logviewer.php');
-			
 			$log = new LogViewer();
 			$log->display(LogViewer::MODE_DOWNLOAD);
 		}
 		
 		protected function __flushLog() {
 			require_once(dirname(__FILE__) . '/lib/class.logviewer.php');
-			
 			$log = new LogViewer();
 			$log->flush();
 		}
@@ -80,11 +87,11 @@
 			$context['parent']->Page->addScriptToHead(URL . '/extensions/db_sync/assets/ui-logic.js', 666);
 			
 			if(isset($_POST['action']['db_sync_echo'])){
-				header('Location: ' . URL . '/symphony/extension/db_sync/log/');
+				$this->__echoLog();
 			}
 			
 			if(isset($_POST['action']['db_sync_flush'])){
-				$this->__flushLog($context);
+				$this->__flushLog();
 			}
 			
 			if(isset($_POST['action']['db_sync_download'])) {
@@ -107,7 +114,7 @@
 				require_once(dirname(__FILE__) . '/lib/class.logviewer.php');
 				$log = new LogViewer();
 				
-				$span->appendChild(new XMLElement('button', 'View log (' . $log->count() . ' queries)', array('name' => 'action[db_sync_echo]', 'type' => 'submit')));
+				$span->appendChild(new XMLElement('button', 'View log (' . $log->countQueries() . ')', array('name' => 'action[db_sync_echo]', 'type' => 'submit')));
 				$span->appendChild(new XMLElement('button', 'Download SQL', array('name' => 'action[db_sync_download]', 'type' => 'submit')));
 				$span->appendChild(new XMLElement('button', 'Flush Log', array('name' => 'action[db_sync_flush]', 'type' => 'submit')));
 			}
