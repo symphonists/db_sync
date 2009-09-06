@@ -25,20 +25,20 @@ While this extension has worked well for my own projects, I can't guarantee its 
 
 ## Version History
 
-0.6
+### 0.6
 * skipped public 0.5 version (in-house release)
 * removed ASDC dependency
 * added support for "events" so that queries are logged in batches
 * removed `/content/log.php` viewing page for simplicity
 
-0.4
+### 0.4
 * added escaping of logged SQL string to fix apostrophes and regular expressions (ND)
 * removed Database Sync from System menu in favour of button on System Preferences page (ND)
 * added query count to UI and downloaded SQL dump (ND)
 
-0.3
+### 0.3
 * added export/flush controls to System > Preferences (RW)
 * added timestamp to log (RW)
 
-0.1 and 0.2
+### 0.1 and 0.2
 * internal Airlock releases (ND)
