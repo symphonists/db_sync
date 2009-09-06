@@ -54,16 +54,7 @@ public function query($query){
 	// ==============================================================
 	// Start database logger
 	// ==============================================================
-	if (
-		// only structural changes, no SELECT
-		preg_match('/^(insert|update|delete|create|drop)/i', $query) &&
-		// discard unrequired tables
-		!preg_match('/(sym_sessions|sym_cache|sym_authors)/i', $query) &&
-		// discard content updates to tbl_entries and tbl_entries_data_$field
-		!(preg_match('/^(insert|delete)/i', $query) && preg_match('/(sym_entries)/i', $query))
-	) {
-		mysql_query("INSERT INTO db_sync (`sql`) VALUES(\"" . $this->cleanValue($query) . "\")", $this->_connection['id']);
-	}
+		if (class_exists('LogQuery')) LogQuery::log($query);
 	// ==============================================================
 	// End database logger
 	// ==============================================================
