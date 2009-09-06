@@ -1,9 +1,9 @@
 # Database Synchroniser
 
-* Version: 0.4
+* Version: 0.6
 * Author: Nick Dunn <http://github.com/nickdunn/>, Richard Warrender <http://github.com/rwarrender>
-* Build Date: 2009-08-18
-* Requirements: Symphony 2.0.3 with core modification (see below), ASDC Extension <http://github.com/pointybeard/asdc/tree/master>
+* Build Date: 2009-09-06
+* Requirements: Symphony 2.0.3 with modification (see below)
 
 ## Installation
 
@@ -24,6 +24,12 @@ Obviously this is not a supported core feature. The modification of the MySQL cl
 While this extension has worked well for my own projects, I can't guarantee its stability. My workflow when using a development/staging/production environment is to install this extension on the development server only. When making a release I pull the production database back to staging where I apply the db_sync SQL file. If all goes well after testing, I back up production and run the same db_sync file. The log is then flushed and I can continue developing towards another release.
 
 ## Version History
+
+0.6
+* skipped public 0.5 version (in-house release)
+* removed ASDC dependency
+* added support for "events" so that queries are logged in batches
+* removed `/content/log.php` viewing page for simplicity
 
 0.4
 * added escaping of logged SQL string to fix apostrophes and regular expressions (ND)
