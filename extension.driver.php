@@ -7,7 +7,7 @@
 		public function about() {
 			return array(
 				'name'			=> 'Database Synchroniser',
-				'version'		=> '0.6',
+				'version'		=> '0.7',
 				'release-date'	=> '2009-09-06',
 				'author'		=> array(
 					'name'			=> 'Nick Dunn, Richard Warrender',
@@ -19,43 +19,28 @@
 		}
 		
 		public function uninstall() {
-			$this->_Parent->Database->query("DROP TABLE `db_sync`");
-			$this->_Parent->Database->query("DROP TABLE `db_sync_events`");
+			unlink(MANIFEST . '/db_sync.sql');			
 		}
 		
 		public function install() {
-			
-			$this->_Parent->Database->query("
-				CREATE TABLE `db_sync` (
-				  `id` int(11) NOT NULL auto_increment,
-				  `sql` text,
-				  `event` varchar(255) default NULL,
-				  PRIMARY KEY  (`id`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8
-			");
-			
-			$this->_Parent->Database->query("
-				CREATE TABLE `db_sync_events` (
-				  `id` int(11) NOT NULL auto_increment,
-				  `event` varchar(255) default NULL,
-				  `timestamp` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-				  `author_name` varchar(255) default NULL,
-				  `page` varchar(255) default NULL,
-				  PRIMARY KEY  (`id`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8
-			");
-				
 			return true;
+		}		
+		
+		public static function addToLogFile($line) {
+			$logfile = MANIFEST . '/db_sync.sql';
+			$handle = @fopen($logfile, 'a');
+			fwrite($handle, $line);
+			fclose($handle);
+			
 		}
 		
 		public function getSubscribedDelegates(){
 			return array(
-						array(
+						/*array(
 							'page' => '/system/preferences/',
 							'delegate' => 'AddCustomPreferenceFieldsets',
 							'callback' => 'appendPreferences'
-						),
-
+						),*/
 					);
 		}
 		
