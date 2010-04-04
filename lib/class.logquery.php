@@ -28,13 +28,27 @@ class LogQuery {
 			$line = '';
 			
 			if (self::$id != self::$previous_id) {
-				$line .= "\r\n" . '-- ' . date('Y-m-d H:i:s', time()) . ', ' . Administration::instance()->Author->getFullName() . ', ' . Administration::instance()->getCurrentPageURL() . "\r\n";
-			}		
+				
+				$author = Administration::instance()->Author;
+				
+				$line .= "\r\n" . '-- ' . date('Y-m-d H:i:s', time());
+				
+				if (isset($author)) {
+					$line .= ', ' . $author->getFullName();
+				}
+				
+				if (!is_null(Administration::instance()->getCurrentPageURL())) {
+					$line .= ', ' . Administration::instance()->getCurrentPageURL();
+				}
+				
+				$line .= "\r\n";
+			}
 			
 			$line .= $query . "\r\n";
 			
 			self::$previous_id = self::$id;
 			
+			require_once(EXTENSIONS . '/db_sync/extension.driver.php');
 			extension_db_sync::addToLogFile($line);
 		}
 		

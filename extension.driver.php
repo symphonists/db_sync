@@ -19,7 +19,7 @@
 		}
 		
 		public function uninstall() {
-			unlink(MANIFEST . '/db_sync.sql');			
+			if (file_exists(MANIFEST . '/db_sync.sql')) unlink(MANIFEST . '/db_sync.sql');
 		}
 		
 		public function install() {
@@ -30,17 +30,17 @@
 			$logfile = MANIFEST . '/db_sync.sql';
 			$handle = @fopen($logfile, 'a');
 			fwrite($handle, $line);
-			fclose($handle);
-			
+			fclose($handle);			
 		}
 		
+		/*
 		public function getSubscribedDelegates(){
 			return array(
-						/*array(
+						array(
 							'page' => '/system/preferences/',
 							'delegate' => 'AddCustomPreferenceFieldsets',
 							'callback' => 'appendPreferences'
-						),*/
+						),
 					);
 		}
 		
@@ -109,7 +109,7 @@
 			
 			$context['wrapper']->appendChild($group);
 						
-		}
+		}*/
 		
 
 	}
