@@ -1,9 +1,9 @@
 # Database Synchroniser
 
-* Version: 0.7
+* Version: 0.8
 * Author: Nick Dunn <http://github.com/nickdunn/>, Richard Warrender <http://github.com/rwarrender>
-* Build Date: 2010-03-26
-* Requirements: Symphony 2.0.7 with modification (see below)
+* Build Date: 2010-05-10
+* Requirements: Symphony 2.0.7, requires a small modification to class.mysql.php (see below)
 
 ## Installation
 
@@ -13,7 +13,7 @@
 
 ## Warning
 
-Obviously this is not a supported core feature. The modification of the MySQL class will be lost when you upgrade Symphony.
+Since this extension requires a core file modification, changes you make to the MySQL class will be lost when you upgrade Symphony. Remember to add in the logging call back into `class.mysql.php` if you update Symphony!
 
 As of version 0.7 the queries are stored in a file named `db_sync.sql` in your `/manifest` folder. This is unsecured, and therefore I strongly advise that this extension only be enabled on development environments.
 
@@ -22,6 +22,10 @@ As of version 0.7 the queries are stored in a file named `db_sync.sql` in your `
 While this extension has worked well for my own projects, I can't guarantee its stability. My workflow when using a development/staging/production environment is to install this extension on the development server only. When making a release I pull the production database back to staging where I apply the db_sync SQL file. If all goes well after testing, I back up production and run the same db_sync file. The log is then flushed and I can continue developing towards another release.
 
 ## Version History
+
+### 0.8
+* code tidying
+* fixed bug whereby Reflection field content updates would be logged
 
 ### 0.7
 * removed panel from Preferences page for simplicity/maintenance

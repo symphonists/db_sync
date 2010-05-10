@@ -12,38 +12,33 @@ class LogQuery {
 	
 	static function log($query) {
 
-		if (
-			// ignore queries made by this extension
-			!preg_match('/^-- db_sync_ignore/i', $query) &&
-			// only structural changes, no SELECT
-			preg_match('/^(insert|update|delete|create|drop)/i', $query) &&
-			// discard unrequired tables
-			!preg_match('/(sym_sessions|sym_cache|sym_authors)/i', $query) &&
-			// discard content updates to tbl_entries (includes tbl_entries_fields_*)
-			!(preg_match('/^(insert|delete)/i', $query) && preg_match('/(sym_entries)/i', $query))
-		) {
+		$config = (object)Symphony::$Configuration->get('database');
+
+		/* FILTERS */
+		// queries produced by this extension are prefixed with this comment for filtering
+		if (preg_match('/^-- db_sync_ignore/i', $query)) return;		
+		// only structural changes, no SELECT
+		if (!preg_match('/^(insert|update|delete|create|drop)/i', $query)) return;
+		// un-tracked tables (sessions, cache, authors)
+		if (preg_match("/({$config->tbl_prefix}sessions|{$config->tbl_prefix}cache|{$config->tbl_prefix}authors)/i", $query)) return;
+		// content updates in tbl_entries (includes tbl_entries_fields_*)
+		if (preg_match('/^(insert|delete|update)/i', $query) && preg_match("/({$config->tbl_prefix}entries)/i", $query)) return;
+		
+		self::getEventId();
+		
+		$line = '';
+		
+		if (self::$id != self::$previous_id) {
 			
-			self::getEventId();
+			$line .= "\r\n" . '-- ' . date('Y-m-d H:i:s', time());
 			
-			$line = '';
+			$author = Administration::instance()->Author;
+			if (isset($author)) $line .= ', ' . $author->getFullName();
 			
-			if (self::$id != self::$previous_id) {
-				
-				$author = Administration::instance()->Author;
-				
-				$line .= "\r\n" . '-- ' . date('Y-m-d H:i:s', time());
-				
-				if (isset($author)) {
-					$line .= ', ' . $author->getFullName();
-				}
-				
-				if (!is_null(Administration::instance()->getCurrentPageURL())) {
-					$line .= ', ' . Administration::instance()->getCurrentPageURL();
-				}
-				
-				$line .= "\r\n";
-			}
+			$url = Administration::instance()->getCurrentPageURL();
+			if (!is_null($url)) $line .= ', ' . $url;
 			
+			$line .= "\r\n";			
 			$line .= $query . "\r\n";
 			
 			self::$previous_id = self::$id;
