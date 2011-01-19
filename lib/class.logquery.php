@@ -2,13 +2,7 @@
 
 class LogQuery {
 	
-	public static $id = null;
-	public static $previous_id = null;
-	
-	private function getEventId() {
-		if(!self::$id) self::$id = md5(uniqid('', true));
-		return self::$id;
-	}
+	public static $meta_written = FALSE;
 	
 	static function log($query) {
 
@@ -24,13 +18,11 @@ class LogQuery {
 		// content updates in tbl_entries (includes tbl_entries_fields_*)
 		if (preg_match('/^(insert|delete|update)/i', $query) && preg_match("/({$config->tbl_prefix}entries)/i", $query)) return;
 		
-		self::getEventId();
-		
 		$line = '';
 		
-		if (self::$id != self::$previous_id) {
+		if(self::$meta_written == FALSE) {
 			
-			$line .= "\r\n" . '-- ' . date('Y-m-d H:i:s', time());
+			$line .= "\n\n" . '-- ' . date('Y-m-d H:i:s', time());
 			
 			$author = Administration::instance()->Author;
 			if (isset($author)) $line .= ', ' . $author->getFullName();
@@ -38,14 +30,17 @@ class LogQuery {
 			$url = Administration::instance()->getCurrentPageURL();
 			if (!is_null($url)) $line .= ', ' . $url;
 			
-			$line .= "\r\n";			
-			$line .= $query . "\r\n";
+			self::$meta_written = TRUE;
 			
-			self::$previous_id = self::$id;
-			
-			require_once(EXTENSIONS . '/db_sync/extension.driver.php');
-			extension_db_sync::addToLogFile($line);
 		}
+		
+		$query = trim($query);
+		if (!preg_match('/;$/', $query)) $query .= ";";
+		
+		$line .= "\n\n" . $query . "\n\n";
+		
+		require_once(EXTENSIONS . '/db_sync/extension.driver.php');
+		extension_db_sync::addToLogFile($line);
 		
 	}
 
