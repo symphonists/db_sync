@@ -1,55 +1,8 @@
 public function query($query){
 	
-    if(empty($query)) return false;
-    
-	$query = trim($query);
-	
-	$query_type = $this->determineQueryType($query);
-	
-	if($query_type == self::__READ_OPERATION__ && $this->isCachingEnabled() !== NULL && !preg_match('/^SELECT\s+SQL(_NO)?_CACHE/i', $query)){
-		if($this->isCachingEnabled() === false) $query = preg_replace('/^SELECT\s+/i', 'SELECT SQL_NO_CACHE ', $query);
-		elseif($this->isCachingEnabled() === true) $query = preg_replace('/^SELECT\s+/i', 'SELECT SQL_CACHE ', $query);
-	}
-	
-    if($this->_connection['tbl_prefix'] != 'tbl_'){
-        $query = preg_replace('/tbl_(\S+?)([\s\.,]|$)/', $this->_connection['tbl_prefix'].'\\1\\2', $query);
-    }
-
-	$query_hash = md5($query.time());
-	
-	$this->_log['query'][$query_hash] = array('query' => $query, 'start' => precision_timer());
-
-    $this->flush();
-    $this->_lastQuery = $query;
-
-	$this->_result = @mysql_query($query, $this->_connection['id']);	
-
-	$this->_query_count++;
-
-    if(@mysql_error()){        
-        $this->__error();
-        return false;
-    }
-
-    while ($row = @mysql_fetch_object($this->_result)){	            
-        @array_push($this->_lastResult, $row);
-    }
-		
-    if($query_type == self::__WRITE_OPERATION__){
-			
-        $this->_affectedRows = @mysql_affected_rows();
-			
-        if(stristr($query, 'insert') || stristr($query, 'replace')){
-            $this->_insertID = @mysql_insert_id($this->_connection['id']);
-        }
-				
-    }
-		
-    @mysql_free_result($this->_result);
-	
-	$this->_log['query'][$query_hash]['time'] = precision_timer('stop', $this->_log['query'][$query_hash]['start']);
-	if($this->_logEverything) $this->_log['query'][$query_hash]['lastResult'] = $this->_lastResult;
-	
+	...
+	...
+	...
 	
 	// ==============================================================
 	// Start database logger
