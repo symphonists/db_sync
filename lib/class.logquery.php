@@ -5,16 +5,16 @@ class LogQuery {
 	public static $meta_written = FALSE;
 	
 	static function log($query) {
+		
+		if(Symphony::Configuration()->get('enabled', 'db_sync') == 'no') return;
 
-		$config = (object)Symphony::Configuration()->get('database');
+		$tbl_prefix = (object)Symphony::Configuration()->get('tbl_prefix', 'database');
 
 		/* FILTERS */
-		// queries produced by this extension are prefixed with this comment for filtering
-		// if (preg_match('/^-- db_sync_ignore/i', $query)) return;
 		// only structural changes, no SELECT statements
 		if (!preg_match('/^(insert|update|delete|create|drop|alter|rename)/i', $query)) return;
 		// un-tracked tables (sessions, cache, authors)
-		if (preg_match("/{$config->tbl_prefix}(authors|cache|forgotpass|sessions)/i", $query)) return;
+		if (preg_match("/{$tbl_prefix}(authors|cache|forgotpass|sessions)/i", $query)) return;
 		// content updates in tbl_entries (includes tbl_entries_fields_*)
 		if (preg_match('/^(insert|delete|update)/i', $query) && preg_match("/({$config->tbl_prefix}entries)/i", $query)) return;
 		
@@ -35,6 +35,7 @@ class LogQuery {
 		}
 		
 		$query = trim($query);
+		
 		// append query delimeter if it doesn't exist
 		if (!preg_match('/;$/', $query)) $query .= ";";
 		
