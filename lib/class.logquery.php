@@ -8,7 +8,7 @@ class LogQuery {
 		
 		if(Symphony::Configuration()->get('enabled', 'db_sync') == 'no') return;
 
-		$tbl_prefix = (object)Symphony::Configuration()->get('tbl_prefix', 'database');
+		$tbl_prefix = Symphony::Configuration()->get('tbl_prefix', 'database');
 
 		/* FILTERS */
 		// only structural changes, no SELECT statements
@@ -22,13 +22,15 @@ class LogQuery {
 		
 		if(self::$meta_written == FALSE) {
 			
-			$line .= "\n\n" . '-- ' . date('Y-m-d H:i:s', time());
+			$line .= "\n" . '-- ' . date('Y-m-d H:i:s', time());
 			
 			$author = Administration::instance()->Author;
 			if (isset($author)) $line .= ', ' . $author->getFullName();
 			
 			$url = Administration::instance()->getCurrentPageURL();
 			if (!is_null($url)) $line .= ', ' . $url;
+			
+			$line .= "\n";
 			
 			self::$meta_written = TRUE;
 			
@@ -39,7 +41,7 @@ class LogQuery {
 		// append query delimeter if it doesn't exist
 		if (!preg_match('/;$/', $query)) $query .= ";";
 		
-		$line .= "\n\n" . $query . "\n\n";
+		$line .= $query . "\n";
 		
 		require_once(EXTENSIONS . '/db_sync/extension.driver.php');
 		extension_db_sync::addToLogFile($line);
