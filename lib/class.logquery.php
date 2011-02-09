@@ -6,15 +6,15 @@ class LogQuery {
 	
 	static function log($query) {
 
-		$config = (object)Symphony::$Configuration->get('database');
+		$config = (object)Symphony::Configuration()->get('database');
 
 		/* FILTERS */
 		// queries produced by this extension are prefixed with this comment for filtering
-		if (preg_match('/^-- db_sync_ignore/i', $query)) return;		
-		// only structural changes, no SELECT
-		if (!preg_match('/^(insert|update|delete|create|drop)/i', $query)) return;
+		// if (preg_match('/^-- db_sync_ignore/i', $query)) return;
+		// only structural changes, no SELECT statements
+		if (!preg_match('/^(insert|update|delete|create|drop|alter|rename)/i', $query)) return;
 		// un-tracked tables (sessions, cache, authors)
-		if (preg_match("/({$config->tbl_prefix}sessions|{$config->tbl_prefix}cache|{$config->tbl_prefix}authors)/i", $query)) return;
+		if (preg_match("/{$config->tbl_prefix}(authors|cache|forgotpass|sessions)/i", $query)) return;
 		// content updates in tbl_entries (includes tbl_entries_fields_*)
 		if (preg_match('/^(insert|delete|update)/i', $query) && preg_match("/({$config->tbl_prefix}entries)/i", $query)) return;
 		
@@ -35,6 +35,7 @@ class LogQuery {
 		}
 		
 		$query = trim($query);
+		// append query delimeter if it doesn't exist
 		if (!preg_match('/;$/', $query)) $query .= ";";
 		
 		$line .= "\n\n" . $query . "\n\n";
