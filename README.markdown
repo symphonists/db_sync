@@ -1,8 +1,8 @@
 # Database Synchroniser
 
-* Version: 0.8
+* Version: 0.9
 * Author: Nick Dunn <http://github.com/nickdunn/>, Richard Warrender <http://github.com/rwarrender>
-* Build Date: 2010-05-10
+* Build Date: 2011-02-09
 * Requirements: Symphony 2.0.7, requires a small modification to class.mysql.php (see below)
 
 ## Installation
@@ -22,6 +22,11 @@ As of version 0.7 the queries are stored in a file named `db_sync.sql` in your `
 While this extension has worked well for my own projects, I can't guarantee its stability. My workflow when using a development/staging/production environment is to install this extension on the development server only. When making a release I pull the production database back to staging where I apply the db_sync SQL file. If all goes well after testing, I back up production and run the same db_sync file. The log is then flushed and I can continue developing towards another release.
 
 ## Version History
+
+### 0.9
+* removed legacy code from when queries were stored in database
+* fixed major bug whereby only one query would be logged per page load
+* improved filtering of unnecessary queries (thanks Froded!)
 
 ### 0.8
 * code tidying
