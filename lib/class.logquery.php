@@ -16,11 +16,11 @@ class LogQuery {
 
 		/* FILTERS */
 		// queries produced by this extension are prefixed with this comment for filtering
-		if (preg_match('/^-- db_sync_ignore/i', $query)) return;		
+		if (preg_match('/^-- db_sync_ignore/i', $query)) return;
 		// only structural changes, no SELECT
 		if (!preg_match('/^(insert|update|delete|create|drop)/i', $query)) return;
-		// un-tracked tables (sessions, cache, authors)
-		if (preg_match("/({$config->tbl_prefix}sessions|{$config->tbl_prefix}cache|{$config->tbl_prefix}authors)/i", $query)) return;
+		// un-tracked tables (sessions, cache, forgotpass, authors)
+		if (preg_match("/{$config->tbl_prefix}(sessions|cache|forgotpass|authors)/i", $query)) return;
 		// content updates in tbl_entries (includes tbl_entries_fields_*)
 		if (preg_match('/^(insert|delete|update)/i', $query) && preg_match("/({$config->tbl_prefix}entries)/i", $query)) return;
 		
@@ -28,8 +28,8 @@ class LogQuery {
 		
 		$line = '';
 		
+		// Only outputs timestamp, current user and request URL once for each request
 		if (self::$id != self::$previous_id) {
-			
 			$line .= "\r\n" . '-- ' . date('Y-m-d H:i:s', time());
 			
 			$author = Administration::instance()->Author;
@@ -37,16 +37,15 @@ class LogQuery {
 			
 			$url = Administration::instance()->getCurrentPageURL();
 			if (!is_null($url)) $line .= ', ' . $url;
-			
-			$line .= "\r\n";			
-			$line .= $query . "\r\n";
-			
-			self::$previous_id = self::$id;
-			
-			require_once(EXTENSIONS . '/db_sync/extension.driver.php');
-			extension_db_sync::addToLogFile($line);
 		}
 		
+		$line .= "\r\n";
+		$line .= $query . "\r\n";
+		
+		self::$previous_id = self::$id;
+		
+		require_once(EXTENSIONS . '/db_sync/extension.driver.php');
+		extension_db_sync::addToLogFile($line);
 	}
 
 }
