@@ -7,8 +7,8 @@
 		public function about() {
 			return array(
 				'name'			=> 'Database Synchroniser',
-				'version'		=> '0.9',
-				'release-date'	=> '2010-05-10',
+				'version'		=> '0.9.1',
+				'release-date'	=> '2011-02-10',
 				'author'		=> array(
 					'name'			=> 'Nick Dunn, Richard Warrender',
 					'website'		=> 'http://airlock.com',

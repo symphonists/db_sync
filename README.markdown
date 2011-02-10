@@ -1,8 +1,8 @@
 # Database Synchroniser
 
-* Version: 0.9
+* Version: 0.9.1
 * Author: Nick Dunn <http://github.com/nickdunn/>, Richard Warrender <http://github.com/rwarrender>
-* Build Date: 2011-02-09
+* Build Date: 2011-02-10
 * Requirements: Symphony 2.0.7, requires a small modification to class.mysql.php (see below)
 
 ## Installation
