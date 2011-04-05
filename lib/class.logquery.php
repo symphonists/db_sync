@@ -6,6 +6,7 @@ class LogQuery {
 	
 	static function log($query) {
 		
+		if(!Symphony::Engine() instanceOf Administration) return;
 		if(Symphony::Configuration()->get('enabled', 'db_sync') == 'no') return;
 
 		$tbl_prefix = Symphony::Configuration()->get('tbl_prefix', 'database');
