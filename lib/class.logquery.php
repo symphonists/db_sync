@@ -5,10 +5,12 @@ class LogQuery {
 	public static $meta_written = FALSE;
 	
 	static function log($query) {
+		// prevent execution on the frontend
+		if(!class_exists('Administration')) return;
+		//if(!Symphony::Engine() instanceOf Administration) return;
 		
-		if(!Symphony::Engine() instanceOf Administration) return;
 		if(Symphony::Configuration()->get('enabled', 'db_sync') == 'no') return;
-
+		
 		$tbl_prefix = Symphony::Configuration()->get('tbl_prefix', 'database');
 
 		/* FILTERS */
