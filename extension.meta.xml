@@ -2,7 +2,7 @@
 <extension id="db_sync">
 	<name>Database Synchroniser</name>
 	<description>Log database changes to easily synchronise structure (sections, fields, pages) development and production databases, without affecting content.</description>
-	<url type="repo">https://github.com/nickdunn/db_sync</url>
+	<repo type="github">https://github.com/nickdunn/db_sync</repo>
 	<url type="discuss">http://symphony-cms.com/discuss/thread/26748/</url>
 	<types>
 		<type>Deployment</type>
