@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension id="db_sync">
+<extension id="db_sync" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	<name>Database Synchroniser</name>
 	<description>Log database changes to easily synchronise structure (sections, fields, pages) development and production databases, without affecting content.</description>
 	<repo type="github">https://github.com/nickdunn/db_sync</repo>
