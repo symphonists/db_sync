@@ -2,12 +2,15 @@
 <extension id="db_sync" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	<name>Database Synchroniser</name>
 	<description>Log database changes to easily synchronise structure (sections, fields, pages) development and production databases, without affecting content.</description>
-	<repo type="github">https://github.com/nickdunn/db_sync</repo>
+	<repo type="github">https://github.com/symphonists/db_sync</repo>
 	<url type="discuss">http://symphony-cms.com/discuss/thread/26748/</url>
 	<types>
 		<type>Deployment</type>
 	</types>
 	<authors>
+		<author>
+        		<name github="symphonists" symphony="community">Symphony Community</name>
+    		</author>
 		<author>
 			<name github="nickdunn" symphony="nickdunn">Nick Dunn</name>
 			<website>http://nick-dunn.co.uk</website>
