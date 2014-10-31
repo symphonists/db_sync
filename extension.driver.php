@@ -16,14 +16,14 @@
 		
 		public function install() {
 			Symphony::Configuration()->set('enabled', 'yes', 'db_sync');
-			Administration::instance()->saveConfig();
+			Symphony::Configuration()->write();
 			return TRUE;
 		}
 		
 		public function uninstall() {
 			if (file_exists(MANIFEST . '/db_sync.sql')) unlink(MANIFEST . '/db_sync.sql');
 			Symphony::Configuration()->remove('db_sync');
-			Administration::instance()->saveConfig();
+			Symphony::Configuration()->write();
 		}
 		
 		public static function log($context) {
